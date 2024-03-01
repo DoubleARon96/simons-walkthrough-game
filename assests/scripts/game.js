@@ -10,6 +10,18 @@ function newGame() {
     game.currentGame = [];
     game.playerMoves = [];
     game.score = 0;
+
+    for (let circle of document.getElementsByClassName("circle")) {
+        if (circle.getAttribute("data-listener") !== "true") {
+            circle.addEventListener("click", (e) => {
+                let move = e.target.getAttribute("id");
+                game.playerMoves.push(move);
+                lightsOn(move);
+                playerTurn();
+            });
+            circle.setAttribute("data-listener", "true");
+        }
+    }
     showScore();
     addTurn();
 }
@@ -38,8 +50,22 @@ function lightsOn(circ) {
     }, 400);
 }
 
+function playerTurn() {
+    let i = game.playerMoves.length - 1;
+    if (game.currentGame[i] === game.playerMoves[i]) {
+        if (game.currentGame.length === game.playerMoves.length) {
+            game.score++;
+            showScore();
+            addTurn();
+        }
+    } else {
+        alert("Wrong move!");
+        newGame();
+    }
+}
+
 function showScore() {
     document.getElementById("score").innerText = game.score;
 }
 
-module.exports = { game, newGame, showScore, addTurn, lightsOn, showTurns };
+module.exports = { game, newGame, showScore, addTurn, lightsOn, showTurns, playerTurn };
